@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histogram</title>
+  <style>
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+
+    #histogram {
+      display: flex;
+      height: 400px;
+    }
+
+    .bin {
+      width: 100px;
+      height: 20px;
+      margin: 10px 3px 10px 10px;
+      background-color: #4caf50;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+	align-self:end	;
+    }
+
+    .count {
+      position: absolute;
+      bottom: 0px;
+      color: white;
+      font-size: 16px;
+	text-align: center;
+	border-top: solid white 2px;
+	width: 100%;
+    }
+  </style>
+</head>
+<body>
+<div style="width:1000px">  
+<h1 class='title'>Galton Board</h1>
+<div style="font-size:20px">
+	<p>Welcome Young Physicists! Today we have an exciting and interactive exhibit at our physics festival - the Galton Board! This colorful machine is not only a lot of fun to watch, but it also teaches us about the principles of probability and statistics.</p>
+
+<p>As you drop the tiny metal balls onto the board, you'll see them bounce and clatter their way down through the pegs, creating a unique pattern every time. The balls then collect in slots at the bottom, forming a bell curve pattern that demonstrates the laws of probability.</p>
+
+<p> By experimenting with different starting positions and the number of balls dropped, you can see how the resulting pattern changes. It's a fun and engaging way to learn about math and science concepts while having a blast! So come on over and give the Galton Board a try. Who knows, you might even discover something new and exciting!</p>
+
+<p> The histogram records every experiments you performed. Come back in the end of the day to see the result!</p>
+</div>
+</div>
+  
+  <div id="histogram"></div>
+  <script>
+    const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688'];
+    const bins = Array(9).fill(0);
+    const histogram = document.getElementById('histogram');
+    const maxLimit=30;
+
+    function updateBin(binIndex, increment) {
+      bins[binIndex] += increment;
+      if (bins[binIndex] < 0) bins[binIndex] = 0;
+      const bin = histogram.children[binIndex];
+      bin.style.height = `${bins[binIndex] * 10 + 20}px`;
+	var maxCount = Math.max.apply(null,bins)
+      if (maxCount>maxLimit) {
+		for (let i=0; i<9;i++) {
+		histogram.children[i].style.height=`${(bins[i] * 10 )*maxLimit/maxCount +20}px`
+		}
+	}
+      bin.querySelector('.count').textContent = bins[binIndex];
+    }
+
+    for (let i = 0; i < 9; i++) {
+      const bin = document.createElement('div');
+      bin.classList.add('bin');
+      bin.style.backgroundColor = colors[i];
+      bin.style.height = `${bins[i] * 10+20}px`;
+
+      const count = document.createElement('div');
+      count.classList.add('count');
+      count.textContent = bins[i];
+      bin.appendChild(count);
+
+      bin.addEventListener('click', () => updateBin(i, 1));
+      bin.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        updateBin(i, -1);
+      });
+      histogram.appendChild(bin);
+    }
+	
+	document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+      });
+     
+
+  </script>
+</body>
+</html>
